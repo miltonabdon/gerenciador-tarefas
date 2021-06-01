@@ -1,9 +1,10 @@
 import { A } from "hookrouter";
 import React, { useState, useEffect } from "react";
-import { Table } from "react-bootstrap";
+import { Table, Button } from "react-bootstrap";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faPlus } from "@fortawesome/free-solid-svg-icons";
 import ItensListaTarefas from "./itens-lista-tarefas";
+import { useHistory } from "react-router";
 
 function ListarTarefas() {
   const [tarefas, setTarefas] = useState([]);
