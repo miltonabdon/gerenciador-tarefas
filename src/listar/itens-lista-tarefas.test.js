@@ -36,7 +36,7 @@ describe("Teste do componente que exibe um item  da listagem de tarefas", () => 
       <table>
         <tbody>
           <ItensListaTarefas
-            tarefas={[tarefa]}
+            tarefas={[tarefaConcluida]}
             recarregarTarefas={() => false}
           />
         </tbody>
