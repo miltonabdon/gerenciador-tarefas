@@ -1,39 +1,51 @@
-import React, { useState } from "react";
-import PropTypes from "prop-types";
-import { Button, Form, Jumbotron, Modal } from "react-bootstrap";
-import { navigate, A } from "hookrouter";
-import { useEffect } from "react";
+import React, { useState, useEffect } from 'react';
+import PropTypes from 'prop-types';
+import { Button, Form, Jumbotron, Modal } from 'react-bootstrap';
+import { navigate, A } from 'hookrouter';
 
 function AtualizarTarefa(props) {
+
   const [exibirModal, setExibirModal] = useState(false);
   const [formValidado, setFormValidado] = useState(false);
-  const [tarefa, setTarefa] = useState("");
+  const [tarefa, setTarefa] = useState('');
   const [carregarTarefa, setCarregarTarefa] = useState(true);
 
   useEffect(() => {
     if (carregarTarefa) {
-      const tarefasDb = localStorage["tarefas"];
+      const tarefasDb = localStorage['tarefas'];
       const tarefas = tarefasDb ? JSON.parse(tarefasDb) : [];
-      const tarefa = tarefas.filter((t) => t.id === parseInt(props.id))[0];
-
+      const tarefa = tarefas.filter(
+        t => t.id === parseInt(props.id)
+      )[0];
       setTarefa(tarefa.nome);
       setCarregarTarefa(false);
     }
-  }, [carregarTarefa]);
+  }, [carregarTarefa, props]);
 
   function voltar(event) {
     event.preventDefault();
-    navigate("/");
+    navigate('/');
   }
 
   function handleFecharModal() {
-    navigate("/");
+    navigate('/');
   }
 
   function atualizar(event) {
     event.preventDefault();
     setFormValidado(true);
     if (event.currentTarget.checkValidity() === true) {
+      // obtém as tarefas
+      const tarefasDb = localStorage['tarefas'];
+      let tarefas = tarefasDb ? JSON.parse(tarefasDb) : [];
+      // persistir a tarefa atualizada
+      tarefas = tarefas.map(tarefaObj => {
+        if (tarefaObj.id === parseInt(props.id)) {
+          tarefaObj.nome = tarefa;
+        }
+        return tarefaObj;
+      });
+      localStorage['tarefas'] = JSON.stringify(tarefas);
       setExibirModal(true);
     }
   }
@@ -57,8 +69,7 @@ function AtualizarTarefa(props) {
               required
               data-testid="txt-tarefa"
               value={tarefa}
-              onChange={handleTxtTarefa}
-            />
+              onChange={handleTxtTarefa} />
             <Form.Control.Feedback type="invalid">
               A tarefa deve conter ao menos 5 caracteres.
             </Form.Control.Feedback>
@@ -73,15 +84,13 @@ function AtualizarTarefa(props) {
             </A>
           </Form.Group>
         </Form>
-        <Modal
-          show={exibirModal}
-          onHide={handleFecharModal}
-          data-testid="modal"
-        >
+        <Modal show={exibirModal} onHide={handleFecharModal} data-testid="modal">
           <Modal.Header closeButton>
             <Modal.Title>Sucesso</Modal.Title>
           </Modal.Header>
-          <Modal.Body>Tarefa atualizada com sucesso!</Modal.Body>
+          <Modal.Body>
+            Tarefa atualizada com sucesso!
+          </Modal.Body>
           <Modal.Footer>
             <Button variant="success" onClick={handleFecharModal}>
               Continuar
@@ -94,7 +103,7 @@ function AtualizarTarefa(props) {
 }
 
 AtualizarTarefa.propTypes = {
-  id: PropTypes.number.isRequired,
-};
+  id: PropTypes.number.isRequired
+}
 
 export default AtualizarTarefa;
